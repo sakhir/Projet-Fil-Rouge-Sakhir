@@ -1,3 +1,44 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+authentication_token:
+    path: /api/login_check
+    methods: ['POST']
+#creation users
+create_user:
+   path: /api/admin/users
+   controller: App\Controller\UserController::addUser
+   methods: ['POST']
+#liste des apprenants par le formateur et le CM
+list_apprenant:
+   path: /api/apprenants
+   controller: App\Controller\UserController::showApprenants
+   methods: ['GET']
+#liste des formateurs par le CM
+list_formateur_cm:
+   path: /api/formateurs
+   controller: App\Controller\UserController::showFormateurs
+   methods: ['GET']
+#Get one  apprenant 
+show_apprenant:
+   path: /api/apprenant/{id}
+   controller: App\Controller\UserController::findApprenantsById
+   methods: ['GET']
+#Get one formateur 
+show_formateur:
+   path: /api/formateur/{id}
+   controller: App\Controller\UserController::findFormateursById
+   methods: ['GET']
+#editer un apprenant
+edit_apprenant:
+   path: /api/apprenants/{id}
+   controller: App\Controller\UserController::editApprenant
+   methods: ['PUT']
+
+#edit d'un Formateur by id
+edit_formateur:
+  path: /api/formateur/{id}
+  controller: App\Controller\UserController::editFormateur
+  methods: ['PUT']
+#delete user
+delete_user:
+   path: /api/admin/users/{id}
+   controller: App\Controller\UserController::deleteUser
+   methods: ['DELETE']
