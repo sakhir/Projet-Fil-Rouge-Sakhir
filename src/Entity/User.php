@@ -35,8 +35,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *              "normalization_context"={"groups"={"user:read"}},
  *      },
  *      "edit_user"={
- *             "method"="PUT",
+ *             "method"="POST",
  *             "path" = "/admin/users/{id}",
+ *             "route_name"="edit_user",
  *      },
  * },
  * 
@@ -55,7 +56,7 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @Groups({"profil:read","user:read"})
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)

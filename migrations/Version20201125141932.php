@@ -10,22 +10,22 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20201116125206 extends AbstractMigration
+final class Version20201125141932 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return ' ajout des attributs propres à apprenant';
+        return '';
     }
 
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user ADD type VARCHAR(255) NOT NULL, ADD telephone VARCHAR(255) DEFAULT NULL, ADD genre VARCHAR(255) DEFAULT NULL, ADD adresse VARCHAR(255) DEFAULT NULL, ADD statut VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE user DROP sexe');
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user DROP type, DROP telephone, DROP genre, DROP adresse, DROP statut');
+        $this->addSql('ALTER TABLE user ADD sexe VARCHAR(255) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci`');
     }
 }

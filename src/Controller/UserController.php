@@ -6,6 +6,9 @@ use App\Entity\User;
 use App\Entity\Apprenant;
 use App\Entity\CM;
 use App\Entity\Formateur;
+use App\Entity\Profil;
+use App\Helper\UserHelper;
+use App\Repository\ProfilRepository;
 use PhpParser\Node\Expr\Cast;
 use Doctrine\ORM\Mapping\Entity;
 use App\Repository\UserRepository;
@@ -23,10 +26,53 @@ class UserController extends AbstractController
 {
     
     private $security;
+    private $em ;
+    private $helper;
+    private $repo ;
+    private $profilRepo ;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security ,EntityManagerInterface $em ,UserHelper $helper ,UserRepository $repo ,ProfilRepository $profilRepo)
     {
         $this->security = $security;
+        $this->em=$em ;
+        $this->helper=$helper ;
+        $this->repo=$repo ;
+        $this->profilRepo=$profilRepo ;
+    }
+
+
+    // je vais commencer a partir de la à utiliser les services 
+    // creeons une fonction addUser qui va creer tout type d utilisateur 
+    
+    public function addUser(UserHelper $helperUser, SerializerInterface $serializer ,Request $request  ) {
+     $userpost =$request->request->all();
+      
+     $profil= $this->profilRepo->findByProfil($userpost['profil']);
+       
+     $profil="/api/admin/profils/".$profil[0]->getId();
+     $userpost['profil'] =$profil ;
+    
+     //dd($userpost);
+     $profilUser =$serializer->denormalize($userpost['profil'] ,Profil::class);
+    // dd($profilUser);
+     $user=$serializer->denormalize($userpost,"App\Entity\\".ucfirst(strtolower($profilUser->getLibelle())),true);
+     dd($user);
+    $helperUser->createUser($request,$user,$userpost,$profilUser);
+    return $this->json('create',Response::HTTP_OK);
+
+    }
+    public function EditUser($id,Request $request) {
+        $data=$request->request->all();
+        $user=$this->repo->find($id);
+        foreach($data as $key=> $value) {
+            $setProperty='set'.ucfirst($key);
+            $user->$setProperty($value);
+
+        }
+        $image=$this->helper->TRaiterImage($request);
+        $user->setAvatar($image);
+        $this->em->flush();
+         return $this->json('Modification reuissie',Response::HTTP_OK);
     }
 
      //show all apprenants
@@ -169,6 +215,7 @@ class UserController extends AbstractController
      }
   
     //create user
+/*
     public function addUser(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
     {
 
@@ -201,7 +248,7 @@ class UserController extends AbstractController
         $user->setIsconnect("0");
         $user->setIsdeleted("0");
     
-       // $user->setType($user->getProfil()->getLibelle());
+      
        
         $em->persist($user);
          
@@ -209,8 +256,8 @@ class UserController extends AbstractController
         fclose($avatar);
         
         return $this->json("success",201);
-    }
-
+    }      */
+       
     //archiver user 
     public function deleteUser(UserRepository $repo,$id,EntityManagerInterface $em)
     {
@@ -222,4 +269,6 @@ class UserController extends AbstractController
         }
         return $this->json("access denied or not user !!!");
     }
+ 
+    
 }

@@ -20,6 +20,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 class Apprenant extends User
 {
     
+
+      /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    protected $id;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -40,7 +47,10 @@ class Apprenant extends User
      */
     private $statut;
 
-   
+    public function getId(): ?int
+    {
+        return $this->id;
+    }  
 
     public function getTelephone(): ?string
     {

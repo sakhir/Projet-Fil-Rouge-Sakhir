@@ -4,12 +4,15 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProfilRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
@@ -27,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "create_profils"={
  *          "method"= "POST",
  *          "path" = "/admin/profils",
+ *    
  *      }
  *     
  * },
@@ -49,6 +53,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * },
  
  * )
+ * @ApiFilter(SearchFilter::class, properties={ "archivage": "exact"})
+ * 
+ * @UniqueEntity("libelle",message= "le proil existe déja ")
+ * 
  */
 class Profil
 {
@@ -62,6 +70,7 @@ class Profil
     /**
      * @Assert\NotBlank(message="veuillez entrer le profil")
      * @ORM\Column(type="string", length=255)
+     * @Groups({"profil:read"})
      */
     private $libelle;
 
@@ -71,6 +80,11 @@ class Profil
      * @Groups({"profil:read"})
      */
     private $users;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $archivage;
 
     public function __construct()
     {
@@ -120,6 +134,18 @@ class Profil
                 $user->setProfil(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getArchivage(): ?int
+    {
+        return $this->archivage;
+    }
+
+    public function setArchivage(?int $archivage): self
+    {
+        $this->archivage = $archivage;
 
         return $this;
     }

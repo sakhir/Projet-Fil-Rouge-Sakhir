@@ -6,6 +6,15 @@ create_user:
    path: /api/admin/users
    controller: App\Controller\UserController::addUser
    methods: ['POST']
+
+#edit users
+edit_user:
+   path: /api/admin/users/{id}
+   controller: App\Controller\UserController::EditUser
+   methods: ['POST']
+
+  
+
 #liste des apprenants par le formateur et le CM
 list_apprenant:
    path: /api/apprenants
